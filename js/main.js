@@ -172,29 +172,74 @@ if($('.hero__slider').length>0){
 	let iconMenu = document.querySelector(".icon-menu");
 let body = document.querySelector("body");
 let menuBody = document.querySelector(".menu__body");
-let header = document.querySelector('header');
+let header = document.querySelector("header");
 
 if (iconMenu) {
-	iconMenu.addEventListener("click", function () {
-		iconMenu.classList.toggle("active");
-		body.classList.toggle("lock");
-		menuBody.classList.toggle("active");
-		header.classList.toggle('scrolled');
-	});
+   iconMenu.addEventListener("click", function () {
+      iconMenu.classList.toggle("active");
+      body.classList.toggle("lock");
+      menuBody.classList.toggle("active");
+      header.classList.toggle("scrolled");
+   });
 }
 
-window.addEventListener('scroll', function (e) {
-	if (window.scrollY > header.getBoundingClientRect().top) {
-		header.classList.add('scrolled');
-		return;
-	}
-	header.classList.remove('scrolled');
+window.addEventListener("scroll", function (e) {
+   if (window.scrollY > header.getBoundingClientRect().top) {
+      header.classList.add("scrolled");
+      return;
+   }
+   header.classList.remove("scrolled");
 });
 
-setTimeout(function() {
-	// body
-	let mapIframe = '<iframe class="map__iframe" src="https://maps.google.com/maps?q=%D0%BF%D1%80%D0%BE%D1%81%D0%BF%D0%B5%D0%BA%D1%82%20%D0%A1%D1%82%D1%80%D0%BE%D0%B8%D1%82%D0%B5%D0%BB%D0%B5%D0%B9,%2025%D0%B0,%20%D0%86%D0%B2%D0%B0%D0%BD%D0%BE%D0%B2%D0%BE,%20%D0%A0%D0%BE%D1%81%D1%96%D1%8F&t=&z=15&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>';
-	$('.map__canvas').html(mapIframe);
+//POPUP
+$(".pl").click(function (event) {
+   var pl = $(this).attr("href").replace("#", "");
+   popupOpen(pl);
+   return false;
+});
+function popupOpen(pl) {
+   $(".popup").removeClass("active").hide();
+   setTimeout(function () {
+      $("body").addClass("lock");
+   }, 300);
+   history.pushState("", "", "#" + pl);
+   $(".popup-" + pl)
+      .fadeIn(300)
+      .delay(300)
+      .addClass("active");
+}
+function popupClose() {
+   $(".popup").removeClass("active").fadeOut(300);
+   if (!$(".menu__body").hasClass("active")) {
+      $("body").removeClass("lock");
+   }
+
+   history.pushState("", "", window.location.href.split("#")[0]);
+}
+$(".popup-close,.popup__close").click(function (event) {
+   popupClose();
+   return false;
+});
+$(".popup").click(function (e) {
+   if (
+      !$(e.target).is(".popup>.popup__container *") ||
+      $(e.target).is(".popup__close")
+   ) {
+      popupClose();
+      return false;
+   }
+});
+$(document).on("keydown", function (e) {
+   if (e.which == 27) {
+      popupClose();
+   }
+});
+
+setTimeout(function () {
+   // body
+   let mapIframe = `<iframe class="map__iframe" src="https://maps.google.com/maps?q=%D0%BF%D1%80%D0%BE%D1%81%D0%BF%D0%B5%D0%BA%D1%82%20%D0%A1%D1%82%D1%80%D0%BE%D0%B8%D1%82%D0%B5%D0%BB%D0%B5%D0%B9,%2025%D0%B0,%20%D0%86%D0%B2%D0%B0%D0%BD%D0%BE%D0%B2%D0%BE,%20%D0%A0%D0%BE%D1%81%D1%96%D1%8F&t=&z=15&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe>`;
+   $(".map__canvas").html(mapIframe);
 }, 1000);
+
 	});
 }, 1000);
